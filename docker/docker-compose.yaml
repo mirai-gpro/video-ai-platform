@@ -1,0 +1,30 @@
+# Local / RunPod-equivalent compose for the Video AI Platform.
+# On RunPod, the platform typically runs as a single GPU container; this file
+# is for local reproduction and CI of the API surface.
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: video-ai-platform:dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../config:/workspace/config:ro
+      - ../outputs:/workspace/outputs
+      - ../benchmarks/runs:/workspace/benchmarks/runs
+      - vap-hf-cache:/workspace/.cache/huggingface
+    environment:
+      - VAP_CONFIG=/workspace/config/default.yaml
+    # GPU access (uncomment on a CUDA host / RunPod):
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  vap-hf-cache:

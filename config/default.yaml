@@ -1,0 +1,28 @@
+# Default configuration for the Video AI Platform.
+# Override per-environment with a *.local.yaml (git-ignored) or env vars.
+
+default_provider: skyreels
+output_dir: outputs
+
+server:
+  host: 0.0.0.0
+  port: 8000
+
+benchmark:
+  enabled: true
+  output_dir: benchmarks/runs
+
+# Per-provider options. These are passed into the Provider untouched; the
+# shared layers never interpret them. Real values are filled in at Phase 1.
+providers:
+  options:
+    skyreels:
+      # weights_path: /workspace/weights/SkyReels-V3
+      # dtype: bfloat16
+      # attention: flash      # flash | sage | sdpa
+      # cpu_offload: false
+      {}
+    multitalk:
+      # weights_path: /workspace/weights/MultiTalk
+      # dtype: bfloat16
+      {}

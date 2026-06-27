@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# uv
+.uv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Generated artifacts and model weights (never committed)
+outputs/*
+!outputs/.gitkeep
+*.mp4
+*.mov
+*.wav
+*.png
+*.jpg
+weights/
+checkpoints/
+*.safetensors
+*.ckpt
+*.pth
+*.bin
+
+# Benchmark run data (kept out of VCS; reports are exported on demand)
+benchmarks/runs/*
+!benchmarks/runs/.gitkeep
+
+# Local config / secrets
+.env
+*.local.yaml
+config/local/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
