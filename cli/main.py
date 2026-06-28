@@ -12,7 +12,7 @@ from pathlib import Path
 
 import typer
 
-from pipeline import Pipeline, PipelineRequest
+from pipeline import PipelineRequest, build_pipeline
 from providers import available, create
 from providers.base import (
     GenerationMode,
@@ -77,7 +77,7 @@ def talking_avatar(
 
 def _run(req: PipelineRequest) -> None:
     try:
-        result = Pipeline().run(req)
+        result = build_pipeline().run(req)
     except (KeyError, ValueError, TypeError) as e:
         raise typer.BadParameter(str(e)) from e
     except ProviderError as e:

@@ -26,9 +26,11 @@ settings. Persist to **both CSV (append, for trend/compare) and JSON
 including a comparison block against a baseline record (% faster, VRAM delta,
 bitrate delta).
 
-The schema and writers ship with the scaffold; automatic capture is wired into
-the Pipeline in Phase 3 (§14), but the schema is fixed now so early Phase-1
-runs already produce comparable rows.
+The schema, writers, resource capture, and the `BenchmarkRecorder` are wired
+into the Pipeline now: every successful generation is measured (wall time, peak
+VRAM, CPU%, output size) and persisted automatically. Peak-VRAM populates on
+CUDA and is zero on CPU, so the path runs in CI without a GPU. Phase 3 layers
+on automation/reporting polish (§14); the capture itself is already in place.
 
 ## Consequences
 

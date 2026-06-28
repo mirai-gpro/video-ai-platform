@@ -16,7 +16,7 @@ from api.schemas import (
     GenerateResponseModel,
     ProviderInfoModel,
 )
-from pipeline import Pipeline, PipelineRequest
+from pipeline import Pipeline, PipelineRequest, build_pipeline
 from providers import available, create
 from providers.base import (
     DialogueRequest,
@@ -80,7 +80,7 @@ def create_app(pipeline: Pipeline | None = None) -> FastAPI:
         version="0.1.0",
         summary="Model-agnostic video generation API.",
     )
-    pipe = pipeline or Pipeline()
+    pipe = pipeline or build_pipeline()
 
     @app.get("/healthz")
     def healthz() -> dict[str, str]:

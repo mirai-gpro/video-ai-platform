@@ -12,7 +12,9 @@ tracks — that knowledge lives entirely behind the Provider boundary.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
+from benchmarks.capture import measure
 from providers import GenerationResult, VideoProvider, create
 from providers.base import (
     DialogueRequest,
@@ -23,6 +25,10 @@ from providers.base import (
     TalkingAvatarRequest,
     _BaseRequest,
 )
+
+if TYPE_CHECKING:
+    from benchmarks.recorder import BenchmarkRecorder
+    from config import Settings
 
 
 @dataclass
@@ -61,9 +67,16 @@ _EXPECTED_REQUEST: dict[GenerationMode, type] = {
 class Pipeline:
     """Resolves a Provider and dispatches a request to the correct method."""
 
-    def __init__(self, provider_factory=create) -> None:
+    def __init__(
+        self,
+        provider_factory=create,
+        recorder: BenchmarkRecorder | None = None,
+    ) -> None:
         # Injectable for tests; defaults to the real registry resolver.
         self._provider_factory = provider_factory
+        # Optional benchmark recorder; when set, successful runs are measured
+        # and persisted. Left None keeps the Pipeline a pure dispatcher.
+        self._recorder = recorder
 
     def run(self, request: PipelineRequest) -> GenerationResult:
         provider: VideoProvider = self._provider_factory(request.provider)
@@ -82,5 +95,30 @@ class Pipeline:
             )
 
         method = getattr(provider, _DISPATCH[request.mode])
-        # Phase 3: wrap this call in benchmarks.capture(...) to record metrics.
-        return method(request.mode_request)
+
+        if self._recorder is None:
+            return method(request.mode_request)
+
+        # Measure around the call; on failure the exception propagates and no
+        # record is written (benchmarks reflect successful generations only).
+        with measure() as sample:
+            result = method(request.mode_request)
+        self._recorder.record(result, sample)
+        return result
+
+
+def build_pipeline(settings: Settings | None = None) -> Pipeline:
+    """Composition root: a Pipeline wired with a benchmark recorder per config.
+
+    Used by the API and CLI so real Phase-1 runs auto-record benchmarks. Unit
+    tests construct ``Pipeline`` directly (no recorder) for pure dispatch.
+    """
+    from config import load_settings
+
+    settings = settings or load_settings()
+    recorder = None
+    if settings.benchmark.enabled:
+        from benchmarks.recorder import BenchmarkRecorder
+
+        recorder = BenchmarkRecorder(settings.benchmark.output_dir, enabled=True)
+    return Pipeline(recorder=recorder)
