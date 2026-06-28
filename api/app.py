@@ -103,6 +103,10 @@ def create_app(pipeline: Pipeline | None = None) -> FastAPI:
 
     @app.post("/generate", response_model=GenerateResponseModel)
     def generate(body: GenerateRequestModel) -> GenerateResponseModel:
+        # Phase 1: synchronous — the request blocks until generation completes
+        # (ADR-0007). Suitable for internal validation; an async job/queue
+        # variant is added in Phase 3 by wrapping this same Pipeline.run() in a
+        # worker, with no change below the API layer.
         try:
             req = PipelineRequest(
                 provider=body.provider,

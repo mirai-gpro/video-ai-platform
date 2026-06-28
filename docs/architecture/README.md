@@ -106,7 +106,11 @@ tests) while honoring "review before implementation."
    commit to pin (ADR-0002). (MultiTalk is deferred — ADR-0004.)
 2. **Output storage** — local `outputs/` only for now, or object storage
    (S3/GCS) from the start for the commercial service?
-3. **API auth & job model** — is `POST /generate` synchronous for Phase 1,
-   with async jobs/queue deferred, acceptable given multi-minute generations?
+
+Resolved:
+
+- ~~**API job model**~~ — **Decided: synchronous `POST /generate` for Phase 1**
+  (internal validation), async queue deferred to Phase 3. See
+  [ADR-0007](../adr/0007-api-job-model.md).
 
 These do not block the architecture; they shape Phase 1 scope.
