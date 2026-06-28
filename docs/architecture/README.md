@@ -100,17 +100,15 @@ tests) while honoring "review before implementation."
 | RunPod optimization review | [`runpod-optimization.md`](runpod-optimization.md) |
 | RunPod RTX 4090 setup      | [`runpod-setup.md`](runpod-setup.md) |
 
-## 7. Open questions for sign-off
+## 7. Sign-off decisions (all resolved)
 
-1. **Upstream pin** — confirm the official SkyReels V3 repo URL and the exact
-   commit to pin (ADR-0002). (MultiTalk is deferred — ADR-0004.)
-2. **Output storage** — local `outputs/` only for now, or object storage
-   (S3/GCS) from the start for the commercial service?
+- **Upstream pin** — SkyReels V3 at `https://github.com/SkyworkAI/SkyReels-V3`;
+  submodule added/pinned in a GitHub-reachable env (ADR-0002). MultiTalk
+  deferred (ADR-0004).
+- **API job model** — synchronous `POST /generate` for Phase 1 (internal
+  validation); async queue deferred to Phase 3 (ADR-0007).
+- **Output storage** — local `outputs/` for Phase 1 (RunPod Network Volume);
+  object storage deferred to Phase 3 (ADR-0008).
 
-Resolved:
-
-- ~~**API job model**~~ — **Decided: synchronous `POST /generate` for Phase 1**
-  (internal validation), async queue deferred to Phase 3. See
-  [ADR-0007](../adr/0007-api-job-model.md).
-
-These do not block the architecture; they shape Phase 1 scope.
+No open questions block Phase 1. Remaining items are execution steps, not
+decisions.

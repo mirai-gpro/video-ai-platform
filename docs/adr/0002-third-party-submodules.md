@@ -25,8 +25,15 @@ reintroduced.
 
 | Submodule | Status | Upstream URL | Pinned commit |
 |-----------|--------|--------------|---------------|
-| SkyReels-V3 | active (Phase 1) | _TBD — confirm official repo_ | _TBD_ |
+| SkyReels-V3 | active (Phase 1) | `https://github.com/SkyworkAI/SkyReels-V3` | _set on first add_ |
 | MultiTalk   | deferred (later) | _TBD when reintroduced_ | _TBD_ |
+
+> **Where the submodule is added.** The Claude Code session's git egress is
+> scoped to the platform repository only, so external hosts (github.com) are
+> denied by egress policy there. The submodule is therefore added in a
+> GitHub-reachable environment (the RunPod / local dev box) by running
+> `scripts/init_submodules.sh`; commit the resulting `.gitmodules` +
+> gitlink and record the pinned commit in the table above.
 
 ## Consequences
 

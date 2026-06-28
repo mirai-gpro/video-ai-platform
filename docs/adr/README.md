@@ -13,6 +13,7 @@ constraints. Required by proposal §15.
 | [0005](0005-benchmark-system.md) | Benchmark system from day one | Proposed |
 | [0006](0006-runtime-stack.md) | Runtime stack: Python 3.12, uv, FastAPI, Typer, YAML, JSON logs | Proposed |
 | [0007](0007-api-job-model.md) | API job model: synchronous Phase 1, async queue later | Proposed |
+| [0008](0008-output-storage.md) | Output storage: local `outputs/` Phase 1, object storage later | Proposed |
 
 All ADRs are **Proposed** pending design approval (§15). On approval they move
 to **Accepted** and implementation (Phase 1) begins.

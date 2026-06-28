@@ -35,13 +35,15 @@ add_submodule() {
 }
 
 echo "Repo: $REPO_ROOT"
-echo "NOTE: Phase 1 step. Uncomment the calls below once upstream pins are confirmed."
+echo "Adding/updating the SkyReels V3 submodule (requires network access to github.com)."
 
-# add_submodule "$SKYREELS_URL"  third_party/SkyReels-V3
-# (MultiTalk deferred — ADR-0004):
+# SkyReels V3 — confirmed upstream (ADR-0002).
+add_submodule "$SKYREELS_URL" third_party/SkyReels-V3
+
+# MultiTalk deferred (ADR-0004); restore when reintroduced:
 # add_submodule "$MULTITALK_URL" third_party/MultiTalk
 
-# After adding, pin to reviewed commits and record them in
-# docs/adr/0002-third-party-submodules.md, then:
+# After adding, pin to the reviewed commit and record it in
+# docs/adr/0002-third-party-submodules.md:
 git submodule update --init --recursive
 echo "Done."
