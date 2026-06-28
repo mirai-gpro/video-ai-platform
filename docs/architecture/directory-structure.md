@@ -8,11 +8,11 @@ model-specific.** Only `providers/` is.
 ```
 video-ai-platform/
 ├── third_party/         # upstream model repos as submodules — never forked (§7)
-│   └── SkyReels-V3/      #   (MultiTalk deferred — added in a later phase)
+│   └── OmniAvatar/       #   (other models deferred — added in later phases)
 ├── providers/           # the ONLY model-specific code (§7, §8)
 │   ├── base.py          #   VideoProvider contract + request/result dataclasses
 │   ├── registry.py      #   name -> provider factory resolution
-│   └── skyreels/        #   SkyReels V3 adapter (MultiTalk deferred — ADR-0004)
+│   └── omniavatar/      #   OmniAvatar 1.3B adapter (others deferred — ADR-0004)
 ├── pipeline/            # model-agnostic orchestration (§9)
 ├── api/                 # FastAPI REST surface (§10)
 ├── cli/                 # Typer CLI (§11) — same Pipeline as the API

@@ -56,14 +56,14 @@ def _bootstrap() -> None:
     Imports are local so a failure to import one Provider's (GPU) dependencies
     does not prevent the others from registering.
 
-    Active scope: SkyReels V3 only. MultiTalk is deferred to a future phase
-    (ADR-0004); when it returns it is added here as one more registration —
-    nothing upstream of the Provider boundary changes.
+    Active scope: OmniAvatar 1.3B only. Other models (e.g. MultiTalk for
+    multi-person dialogue) are deferred (ADR-0004); when added they are one
+    more registration — nothing upstream of the Provider boundary changes.
     """
     try:
-        from providers.skyreels import register_provider as _skyreels
+        from providers.omniavatar import register_provider as _omniavatar
 
-        _skyreels()
+        _omniavatar()
     except Exception:  # noqa: BLE001 - design-phase tolerance; logged in Phase 1
         pass
 

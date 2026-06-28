@@ -4,15 +4,18 @@ A **model-agnostic, modular video generation platform** for producing
 commercial-quality short dramas, idol music videos, AI interviews, and
 SNS-oriented short-form video.
 
-The platform is intentionally **not** a SkyReels-only system. Video
+The platform is intentionally **not** a single-model system. Video
 generation models are integrated behind a common **Provider** interface so
-that today's model (SkyReels V3) and tomorrow's (MultiTalk, SkyReels V4,
-Wan, Hallo2, FaceFusion, …) can be swapped in by adding a Provider — without
-touching the Pipeline, REST API, CLI, or future Web UI.
+that today's model (OmniAvatar 1.3B) and tomorrow's (MultiTalk, Wan, Hallo2,
+FaceFusion, …) can be swapped in by adding a Provider — without touching the
+Pipeline, REST API, CLI, or future Web UI. (The first model already moved from
+SkyReels V3 to OmniAvatar during design with no change above the Provider
+boundary — that swap-without-rewrite is the whole point.)
 
-> **Scope note.** The current phase integrates **SkyReels V3 only**.
-> MultiTalk is **deferred** (not tested/used for now) and will be added later
-> as one more Provider — see [ADR-0004](docs/adr/0004-initial-model-targets.md).
+> **Scope note.** The current phase integrates **OmniAvatar 1.3B only** — an
+> audio-driven avatar model (reference image + audio → talking/singing video,
+> Apache-2.0). SkyReels V3 is **cancelled**; other models (MultiTalk, Wan, …)
+> are deferred — see [ADR-0004](docs/adr/0004-initial-model-targets.md).
 
 > **Status: Design / Review phase.**
 > Per the project policy (proposal §15), the architecture, ADRs, directory
@@ -47,11 +50,11 @@ Records.
 ```
 video-ai-platform/
 ├── third_party/         # upstream model repos as git submodules (never forked)
-│   └── SkyReels-V3/      #   (MultiTalk deferred — added in a later phase)
+│   └── OmniAvatar/       #   (other models deferred — added in later phases)
 ├── providers/           # the ONLY place model-specific code is allowed
 │   ├── base.py          # VideoProvider abstract interface + data contracts
 │   ├── registry.py      # name -> provider resolution
-│   └── skyreels/        #   (MultiTalk provider deferred — ADR-0004)
+│   └── omniavatar/      #   OmniAvatar 1.3B adapter (others deferred — ADR-0004)
 ├── pipeline/            # model-agnostic orchestration
 ├── api/                 # REST API (FastAPI) — common interface
 ├── cli/                 # command-line entrypoint
@@ -84,9 +87,9 @@ The REST API is uniform across models:
 
 ```http
 POST /generate
-{ "provider": "skyreels", "mode": "text_to_video" }
+{ "provider": "omniavatar", "mode": "talking_avatar" }
 POST /generate
-{ "provider": "skyreels", "mode": "talking_avatar" }
+{ "provider": "omniavatar", "mode": "singing" }
 ```
 
 The envelope is identical for every future model — selecting MultiTalk, Wan,
@@ -133,14 +136,16 @@ Until model integration lands, the Providers are registered but raise a clear
 
 | Phase | Scope |
 |-------|-------|
-| 1 | **SkyReels V3** integration · Provider impl · Docker · RunPod |
-| 2 | SkyReels modes: Text-to-Video · Talking Avatar · Video Extend |
+| 1 | **OmniAvatar 1.3B** integration · Provider impl · Docker · RunPod |
+| 2 | OmniAvatar modes: Talking Avatar · Singing |
 | 3 | Benchmark automation · REST API · CLI |
-| later | **MultiTalk** (Dialogue · Singing) · Hallo2 · Wan · FaceFusion |
+| later | **MultiTalk** (multi-person Dialogue) · Wan (Text-to-Video) · Hallo2 · FaceFusion |
 
-> MultiTalk is deferred (ADR-0004). Audio-driven Dialogue/Singing modes are
-> provided by MultiTalk and therefore move to the "later" phase with it; the
-> mode contracts already exist so re-introduction is additive.
+> Only OmniAvatar 1.3B is active (ADR-0004). It is audio-driven and
+> single-person, so multi-person `dialogue` and `text_to_video` modes exist in
+> the contract but are unserved until a provider that supports them is added
+> (MultiTalk, Wan). Re-introduction is additive — a new Provider, no change
+> above the boundary.
 
 Full phase breakdown and the performance-optimization backlog
 (FlashAttention, SageAttention, torch.compile, FP8, CPU offload, xDiT, …) are

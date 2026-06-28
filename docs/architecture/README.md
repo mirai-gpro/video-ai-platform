@@ -9,10 +9,11 @@
 
 The product goal (§1, §18) is a **commercial-quality** platform for short
 dramas, idol MVs, AI interviews, dialogue, and SNS shorts. The single
-strongest engineering pressure is **§17: this is not a SkyReels system.** The
-chosen generation model *will* change — SkyReels V4, Wan, Hallo2, FaceFusion
-are already named. Therefore the architecture optimizes for **swapping the
-model without rewriting the product.**
+strongest engineering pressure is **§17: this is not a single-model system.**
+The chosen generation model *will* change — the first target itself moved from
+SkyReels V3 to OmniAvatar 1.3B during design, and MultiTalk, Wan, Hallo2,
+FaceFusion are named to follow. Therefore the architecture optimizes for
+**swapping the model without rewriting the product.**
 
 Every decision below follows from that pressure.
 
@@ -37,11 +38,11 @@ Every decision below follows from that pressure.
               └───┬────────────┘
                   ▼        ┌············┐   the ONLY model-specific code (providers/)
           ┌──────────┐    : multitalk  :   (deferred — added later, ADR-0004)
-          │ skyreels │    : wan/hallo2 :
+          │omniavatar│    : wan/hallo2 :
           └────┬─────┘    └············┘
                ▼
         third_party/                       upstream repos as submodules (§7)
-        SkyReels-V3                         never forked, never edited
+        OmniAvatar                         never forked, never edited
 ```
 
 **The Provider boundary is the architecture.** Everything above it is written
@@ -70,8 +71,8 @@ Two rules make the boundary real rather than aspirational:
 2. It maps the envelope onto the typed request for that mode (`app._build_mode_request`).
 3. `Pipeline.run` resolves the Provider via the registry, validates mode +
    request type, and dispatches to the matching method.
-4. The Provider returns a uniform `GenerationResult`; (Phase 3) the Pipeline
-   wraps the call in benchmark capture.
+4. The Provider returns a uniform `GenerationResult`; when a benchmark recorder
+   is wired (default), the Pipeline measures the call and records it.
 5. API shapes the result back into JSON.
 
 The same path 1-of serves the CLI (`cli/main.py`) — proving the
@@ -85,8 +86,9 @@ The same path 1-of serves the CLI (`cli/main.py`) — proving the
 - The Docker `gpu` extra and CUDA/torch pins are stubbed until Phase 1 locks
   them against the submodule requirements.
 
-This keeps the design **runnable and testable on CPU-only CI** (16 contract
-tests) while honoring "review before implementation."
+This keeps the design **runnable and testable on CPU-only CI** (22 tests
+covering the contract, dispatch, API, and benchmark capture) while honoring
+"review before implementation."
 
 ## 6. Review checklist (proposal §15)
 
@@ -102,9 +104,9 @@ tests) while honoring "review before implementation."
 
 ## 7. Sign-off decisions (all resolved)
 
-- **Upstream pin** — SkyReels V3 at `https://github.com/SkyworkAI/SkyReels-V3`;
-  submodule added/pinned in a GitHub-reachable env (ADR-0002). MultiTalk
-  deferred (ADR-0004).
+- **Initial model** — OmniAvatar 1.3B at
+  `https://github.com/Omni-Avatar/OmniAvatar` (SkyReels V3 cancelled);
+  submodule added/pinned in a GitHub-reachable env (ADR-0002, ADR-0004).
 - **API job model** — synchronous `POST /generate` for Phase 1 (internal
   validation); async queue deferred to Phase 3 (ADR-0007).
 - **Output storage** — local `outputs/` for Phase 1 (RunPod Network Volume);

@@ -35,9 +35,11 @@ Three stages so the slow layers cache independently of fast-moving app code:
   extra. (If a submodule ships importable Python that we call directly, Phase 1
   decides between `pip install -e third_party/<m>` in the `deps` stage vs.
   `PYTHONPATH`.)
-- **CUDA 12.x + Python 3.12 + latest PyTorch** per §11; exact patch pins are
-  fixed in Phase 1 so they match the chosen FlashAttention/SageAttention
-  builds (see RunPod optimization review).
+- **CUDA 12.x + Python 3.12** per §11. PyTorch is pinned to **2.4.0**
+  (torchvision 0.19.0, torchaudio 2.4.0) to match OmniAvatar 1.3B's
+  requirements (ADR-0004); optional flash-attn and the Wav2Vec2 audio encoder
+  are added in the `gpu` extra. Exact patch pins are fixed in Phase 1 against
+  the submodule commit (see RunPod optimization review).
 
 ## Runtime
 

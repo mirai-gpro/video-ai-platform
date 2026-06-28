@@ -6,8 +6,8 @@
 
 ## Context
 
-The platform must not be tied to one generation model (§17). SkyReels V4, Wan,
-Hallo2, and FaceFusion are already named as future targets (§3, §17). The prior
+The platform must not be tied to one generation model (§17). MultiTalk, Wan,
+Hallo2, and FaceFusion are named as future targets (§3, §17). The prior
 system was effectively MultiTalk-specific; re-coupling the product to a single
 model would force a rewrite at every model change. Model-dependent code is
 explicitly **prohibited** outside a defined boundary (§17).

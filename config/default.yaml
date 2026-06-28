@@ -1,7 +1,7 @@
 # Default configuration for the Video AI Platform.
 # Override per-environment with a *.local.yaml (git-ignored) or env vars.
 
-default_provider: skyreels
+default_provider: omniavatar
 output_dir: outputs
 
 server:
@@ -15,13 +15,18 @@ benchmark:
 # Per-provider options. These are passed into the Provider untouched; the
 # shared layers never interpret them. Real values are filled in at Phase 1.
 #
-# Active scope: SkyReels V3 only. MultiTalk is deferred to a future phase
-# (ADR-0004); add its options block here when it is reintroduced.
+# Active scope: OmniAvatar 1.3B only. Other models (e.g. MultiTalk for
+# multi-person dialogue) are deferred (ADR-0004); add their options here when
+# reintroduced. Values are passed into the Provider untouched.
 providers:
   options:
-    skyreels:
-      # weights_path: /workspace/weights/SkyReels-V3
+    omniavatar:
+      # weights_path: /workspace/weights/OmniAvatar-1.3B
+      # config: configs/inference_1.3B.yaml
+      # num_steps: 25            # 20-50
+      # guidance_scale: 4.5
+      # audio_scale: 3.0
       # dtype: bfloat16
-      # attention: flash      # flash | sage | sdpa
-      # cpu_offload: false
+      # cpu_offload: false       # enable to fit the 24GB RTX 4090 if needed
+      # flash_attn: true
       {}

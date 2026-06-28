@@ -1,7 +1,7 @@
 """Canonical benchmark record schema (proposal §12).
 
 Every field the proposal lists as a "保存項目" (saved item) is a first-class
-column so that SkyReels V3, MultiTalk, and every future model produce directly
+column so that OmniAvatar 1.3B and every future model produce directly
 comparable rows.
 """
 

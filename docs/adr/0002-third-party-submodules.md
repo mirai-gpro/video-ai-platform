@@ -6,7 +6,7 @@
 
 ## Context
 
-§7 requires that SkyReels V3 and MultiTalk are **not forked**. They must be
+§7 requires that upstream models are **not forked**. They must be
 managed via git submodule (or equivalent) to follow official updates, improve
 maintainability, and keep custom modification minimal. Our own code is allowed
 only under `providers/`.
@@ -19,14 +19,14 @@ adaptation happens entirely in the corresponding `providers/<model>/` package.
 Submodules are added/pinned via `scripts/init_submodules.sh`; this ADR records
 the chosen upstream URLs and commit pins once confirmed.
 
-Active scope this phase: **SkyReels V3 only** (ADR-0004). MultiTalk is
-deferred; its submodule is added under this same policy when it is
-reintroduced.
+Active scope this phase: **OmniAvatar 1.3B only** (ADR-0004). Other models
+(e.g. MultiTalk) are deferred; their submodules are added under this same
+policy when reintroduced.
 
 | Submodule | Status | Upstream URL | Pinned commit |
 |-----------|--------|--------------|---------------|
-| SkyReels-V3 | active (Phase 1) | `https://github.com/SkyworkAI/SkyReels-V3` | _set on first add_ |
-| MultiTalk   | deferred (later) | _TBD when reintroduced_ | _TBD_ |
+| OmniAvatar | active (Phase 1) | `https://github.com/Omni-Avatar/OmniAvatar` | _set on first add_ |
+| MultiTalk  | deferred (later) | _TBD when reintroduced_ | _TBD_ |
 
 ### Update policy — pinned + manual bump (decided)
 

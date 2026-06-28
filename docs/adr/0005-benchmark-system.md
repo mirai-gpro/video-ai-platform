@@ -9,7 +9,7 @@
 §12-13 require a benchmark system in the initial implementation to compare
 generation models and settings objectively and to form the baseline data for
 future model comparisons. (MultiTalk is deferred this phase — ADR-0004 — so
-the first comparisons are SkyReels setting-vs-setting; the schema is identical
+the first comparisons are OmniAvatar setting-vs-setting; the schema is identical
 for model-vs-model when MultiTalk and other Providers arrive.) The original
 system's core problem was speed/cost (§2), so
 measuring inference time, VRAM, and output characteristics is central — not an

@@ -19,16 +19,17 @@ from providers.base import (
 
 def test_builtin_providers_registered():
     names = available()
-    # Active scope this phase: SkyReels V3 only (MultiTalk deferred, ADR-0004).
-    assert "skyreels" in names
-    assert "multitalk" not in names
+    # Active scope this phase: OmniAvatar 1.3B only (ADR-0004).
+    assert "omniavatar" in names
+    assert "skyreels" not in names  # SkyReels V3 cancelled (ADR-0004)
+    assert "multitalk" not in names  # deferred
 
 
 def test_provider_info_declares_modes():
-    sky = create("skyreels")
-    assert isinstance(sky, VideoProvider)
-    assert GenerationMode.TEXT_TO_VIDEO in sky.info.modes
-    assert sky.supports(GenerationMode.TEXT_TO_VIDEO)
+    omni = create("omniavatar")
+    assert isinstance(omni, VideoProvider)
+    assert GenerationMode.TALKING_AVATAR in omni.info.modes
+    assert omni.supports(GenerationMode.SINGING)
 
 
 def test_unknown_provider_raises():
@@ -37,16 +38,16 @@ def test_unknown_provider_raises():
 
 
 def test_unsupported_mode_is_rejected_before_model_work():
-    # SkyReels does not advertise SINGING -> capability guard fires.
-    sky = create("skyreels")
-    assert not sky.supports(GenerationMode.SINGING)
+    # OmniAvatar is audio-driven; it does not advertise TEXT_TO_VIDEO.
+    omni = create("omniavatar")
+    assert not omni.supports(GenerationMode.TEXT_TO_VIDEO)
     with pytest.raises(UnsupportedModeError):
-        sky.singing(None)  # type: ignore[arg-type]
+        omni.generate(None)  # type: ignore[arg-type]
 
 
 def test_supported_mode_reaches_not_yet_implemented():
-    # SkyReels advertises TEXT_TO_VIDEO; in design phase it signals clearly.
-    sky = create("skyreels")
-    assert sky.supports(GenerationMode.TEXT_TO_VIDEO)
+    # OmniAvatar advertises TALKING_AVATAR; in design phase it signals clearly.
+    omni = create("omniavatar")
+    assert omni.supports(GenerationMode.TALKING_AVATAR)
     with pytest.raises(NotYetImplementedError):
-        sky.generate(None)  # type: ignore[arg-type]
+        omni.talking_avatar(None)  # type: ignore[arg-type]

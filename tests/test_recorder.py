@@ -13,6 +13,7 @@ from providers.base import (
     GenerationResult,
     NotYetImplementedError,
     ProviderInfo,
+    TalkingAvatarRequest,
     VideoProvider,
     VideoSpec,
 )
@@ -25,12 +26,12 @@ def _result(out_path, size_bytes=2 * 1024 * 1024):
     out_path.write_bytes(b"x" * size_bytes)
     return GenerationResult(
         output_path=out_path,
-        provider="skyreels",
-        model_version="V3",
-        mode=GenerationMode.TEXT_TO_VIDEO,
+        provider="omniavatar",
+        model_version="1.3B",
+        mode=GenerationMode.TALKING_AVATAR,
         spec=VideoSpec(width=1280, height=720, fps=24, duration_seconds=15.0),
         inference_seconds=12.5,
-        metrics={"steps": 30, "seed": 7},
+        metrics={"num_steps": 25, "guidance_scale": 4.5},
     )
 
 
@@ -46,11 +47,11 @@ def test_recorder_builds_expected_record(tmp_path):
     rec = BenchmarkRecorder(tmp_path, environment=CPU_ENV, clock=FIXED_CLOCK)
     sample = ResourceSample(wall_seconds=13.0, peak_vram_gb=0.0, cpu_usage_percent=11.0)
     record = rec.build(_result(tmp_path / "v.mp4"), sample)
-    assert record.provider == "skyreels"
+    assert record.provider == "omniavatar"
     assert record.resolution == "1280x720"
     assert record.inference_seconds == 12.5  # provider value preferred over wall
     assert record.output_file_size_mb == 2.0
-    assert record.generation_settings == {"steps": 30, "seed": 7}
+    assert record.generation_settings == {"num_steps": 25, "guidance_scale": 4.5}
     assert record.gpu == "cpu"
 
 
@@ -60,7 +61,7 @@ def test_recorder_persists_csv_and_json(tmp_path):
     assert out is not None
     csv_text = (tmp_path / "benchmarks.csv").read_text()
     assert csv_text.splitlines()[0].startswith("timestamp,provider")
-    assert "skyreels" in csv_text
+    assert "omniavatar" in csv_text
     assert any(p.suffix == ".json" for p in tmp_path.iterdir())
 
 
@@ -102,9 +103,13 @@ def test_pipeline_records_on_success(tmp_path):
 
 
 def test_pipeline_does_not_record_on_failure(tmp_path):
-    # SkyReels design-phase generate() raises -> no benchmark row written.
+    # OmniAvatar design-phase talking_avatar() raises -> no benchmark row written.
     recorder = BenchmarkRecorder(tmp_path, environment=CPU_ENV, clock=FIXED_CLOCK)
-    pipe = Pipeline(recorder=recorder)  # real registry -> skyreels
+    pipe = Pipeline(recorder=recorder)  # real registry -> omniavatar
     with pytest.raises(NotYetImplementedError):
-        pipe.run(PipelineRequest("skyreels", GenerationMode.TEXT_TO_VIDEO, GenerationRequest()))
+        pipe.run(
+            PipelineRequest(
+                "omniavatar", GenerationMode.TALKING_AVATAR, TalkingAvatarRequest()
+            )
+        )
     assert not (tmp_path / "benchmarks.csv").exists()

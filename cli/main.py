@@ -18,6 +18,7 @@ from providers.base import (
     GenerationMode,
     GenerationRequest,
     ProviderError,
+    SingingRequest,
     TalkingAvatarRequest,
     VideoSpec,
 )
@@ -34,9 +35,47 @@ def list_providers() -> None:
         typer.echo(f"{info.name} ({info.model_version}): {modes}")
 
 
+@app.command("talking-avatar")
+def talking_avatar(
+    provider: str = typer.Option("omniavatar", help="Provider name, e.g. omniavatar"),
+    image: Path = typer.Option(..., help="Reference image"),
+    audio: Path = typer.Option(..., help="Driving audio"),
+    prompt: str = typer.Option("", help="Behavior/scene prompt"),
+    output: Path = typer.Option(Path("outputs/out.mp4")),
+) -> None:
+    """Run audio-driven talking-avatar generation (e.g. OmniAvatar)."""
+    req = PipelineRequest(
+        provider=provider,
+        mode=GenerationMode.TALKING_AVATAR,
+        mode_request=TalkingAvatarRequest(
+            reference_image=image, audio=audio, prompt=prompt, output_path=output
+        ),
+    )
+    _run(req)
+
+
+@app.command()
+def singing(
+    provider: str = typer.Option("omniavatar", help="Provider name, e.g. omniavatar"),
+    image: Path = typer.Option(..., help="Reference image"),
+    audio: Path = typer.Option(..., help="Vocal track"),
+    prompt: str = typer.Option("", help="Behavior/scene prompt"),
+    output: Path = typer.Option(Path("outputs/out.mp4")),
+) -> None:
+    """Run audio-driven singing / lip-sync generation (e.g. OmniAvatar)."""
+    req = PipelineRequest(
+        provider=provider,
+        mode=GenerationMode.SINGING,
+        mode_request=SingingRequest(
+            reference_image=image, audio=audio, prompt=prompt, output_path=output
+        ),
+    )
+    _run(req)
+
+
 @app.command()
 def generate(
-    provider: str = typer.Option(..., help="Provider name, e.g. skyreels"),
+    provider: str = typer.Option(..., help="A text-to-video capable provider"),
     prompt: str = typer.Option("", help="Text prompt"),
     output: Path = typer.Option(Path("outputs/out.mp4"), help="Output file"),
     width: int = 1280,
@@ -44,7 +83,7 @@ def generate(
     fps: int = 24,
     duration: float = 15.0,
 ) -> None:
-    """Run text-to-video generation."""
+    """Run text-to-video generation (for future T2V providers; not OmniAvatar)."""
     req = PipelineRequest(
         provider=provider,
         mode=GenerationMode.TEXT_TO_VIDEO,
@@ -52,24 +91,6 @@ def generate(
             prompt=prompt,
             output_path=output,
             spec=VideoSpec(width=width, height=height, fps=fps, duration_seconds=duration),
-        ),
-    )
-    _run(req)
-
-
-@app.command("talking-avatar")
-def talking_avatar(
-    provider: str = typer.Option(...),
-    image: Path = typer.Option(..., help="Reference image"),
-    audio: Path = typer.Option(..., help="Driving audio"),
-    output: Path = typer.Option(Path("outputs/out.mp4")),
-) -> None:
-    """Run talking-avatar generation."""
-    req = PipelineRequest(
-        provider=provider,
-        mode=GenerationMode.TALKING_AVATAR,
-        mode_request=TalkingAvatarRequest(
-            reference_image=image, audio=audio, output_path=output
         ),
     )
     _run(req)

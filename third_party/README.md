@@ -5,8 +5,8 @@ forked or modified** (proposal §7).
 
 | Path                     | Status            | Purpose                                  |
 |--------------------------|-------------------|------------------------------------------|
-| `third_party/SkyReels-V3`| active (Phase 1)  | Text-to-video foundation model           |
-| `third_party/MultiTalk`  | deferred (later)  | Audio-driven dialogue & singing lip-sync (ADR-0004) |
+| `third_party/OmniAvatar` | active (Phase 1)  | Audio-driven avatar video (talking / singing), 1.3B |
+| `third_party/MultiTalk`  | deferred (later)  | Multi-person dialogue (ADR-0004)         |
 
 Submodules are added and pinned during **Phase 1** via
 [`scripts/init_submodules.sh`](../scripts/init_submodules.sh). The exact
@@ -24,12 +24,12 @@ Submodules are **pinned to a reviewed commit** and **never auto-updated**
 
 ```bash
 # 1. Move the pin to a chosen commit/tag and print the upstream diff
-scripts/bump_submodule.sh third_party/SkyReels-V3 <git-ref>
+scripts/bump_submodule.sh third_party/OmniAvatar <git-ref>
 
-# 2. Review the diff, update providers/skyreels if the API changed,
+# 2. Review the diff, update providers/omniavatar if the API changed,
 #    re-benchmark vs the previous pin, then record + commit:
-git add third_party/SkyReels-V3 docs/adr/0002-third-party-submodules.md
-git commit -m "Bump SkyReels-V3 to <ref>"
+git add third_party/OmniAvatar docs/adr/0002-third-party-submodules.md
+git commit -m "Bump OmniAvatar to <ref>"
 ```
 
 Run this in a GitHub-reachable environment (RunPod / local dev); the Claude

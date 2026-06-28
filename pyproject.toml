@@ -1,7 +1,7 @@
 [project]
 name = "video-ai-platform"
 version = "0.1.0"
-description = "Model-agnostic, modular video generation platform (SkyReels V3 and beyond)"
+description = "Model-agnostic, modular video generation platform (OmniAvatar 1.3B and beyond)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "Proprietary" }
@@ -22,15 +22,15 @@ dependencies = [
 
 [project.optional-dependencies]
 # Installed in the GPU containers (RunPod RTX 4090 / L40S). Pinned for real
-# during Phase 1 once the SkyReels V3 runtime requirements are locked against
-# the submodule commit.
+# during Phase 1 against OmniAvatar 1.3B's requirements (PyTorch 2.4.0,
+# torchvision 0.19.0, torchaudio 2.4.0; optional flash-attn; Wav2Vec2).
 gpu = [
-    # "torch",            # CUDA 12.x build, pinned in docker/ at Phase 1
-    # "accelerate",
+    # "torch==2.4.0",       # CUDA 12.x build, pinned in docker/ at Phase 1
+    # "torchvision==0.19.0",
+    # "torchaudio==2.4.0",
+    # "transformers",        # Wav2Vec2 audio encoder
     # "diffusers",
-    # "transformers",
-    # "xformers",
-    # "flash-attn",
+    # "flash-attn",          # optional acceleration
 ]
 dev = [
     "pytest>=8.2",

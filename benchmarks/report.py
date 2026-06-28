@@ -1,7 +1,7 @@
 """Human-readable benchmark report (proposal §13).
 
 Renders a single run, optionally with a comparison against a baseline record
-(e.g. SkyReels V3 baseline vs an optimized setting, or two models once a second
+(e.g. OmniAvatar 1.3B baseline vs an optimized setting, or two models once a second
 Provider exists) showing relative speed, VRAM, and bitrate.
 """
 

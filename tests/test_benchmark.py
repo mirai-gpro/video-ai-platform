@@ -7,8 +7,8 @@ from benchmarks import BenchmarkRecord, append_csv, render_report, write_json
 
 def _record(**over) -> BenchmarkRecord:
     base = dict(
-        provider="skyreels",
-        model_version="V3",
+        provider="omniavatar",
+        model_version="1.3B",
         gpu="RTX4090",
         vram_total_gb=24.0,
         cuda_version="12.4",
@@ -30,20 +30,20 @@ def test_csv_roundtrip(tmp_path):
     p = append_csv(_record(), tmp_path / "runs.csv")
     text = p.read_text()
     assert "provider" in text.splitlines()[0]
-    assert "skyreels" in text
+    assert "omniavatar" in text
 
 
 def test_json_write(tmp_path):
     p = write_json(_record(), tmp_path / "run.json")
-    assert '"provider": "skyreels"' in p.read_text()
+    assert '"provider": "omniavatar"' in p.read_text()
 
 
 def test_report_with_comparison():
-    # Realistic use this phase: compare two SkyReels settings (optimized vs
+    # Realistic use this phase: compare two OmniAvatar settings (optimized vs
     # baseline) so optimization decisions are evidence-based (ADR-0005).
     optimized = _record(inference_seconds=492.0, peak_vram_gb=21.4, output_file_size_mb=118.0)
     baseline = _record(
-        model_version="V3-baseline",
+        model_version="1.3B-baseline",
         inference_seconds=712.0,
         peak_vram_gb=18.6,
         output_file_size_mb=100.0,

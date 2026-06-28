@@ -16,6 +16,13 @@ decisively below that while holding commercial quality (§18).
 Both targets are **Ada Lovelace**, so FP8 and the latest FlashAttention /
 SageAttention kernels are available — the optimization plan assumes Ada.
 
+> **Note on OmniAvatar 1.3B (active model, ADR-0004).** The 1.3B variant is
+> small relative to 14B and is expected to fit the 24 GB RTX 4090 comfortably,
+> so aggressive VRAM tactics (CPU offload, FP8) are **lower priority** here than
+> they would be for 14B — speed (FlashAttention, bf16, torch.compile) is the
+> main lever. If the 14B variant is later adopted for higher quality, the VRAM
+> tactics below become primary. flash-attn is an optional OmniAvatar dependency.
+
 ## Backlog, prioritized
 
 Each technique is applied **inside Providers** (or via config), never in the
@@ -57,10 +64,11 @@ A/B comparison.
 
 ## Phase-1 follow-ups
 
-- Establish the **first benchmark baseline** (SkyReels V3 on the 4090, default
-  settings) before any optimization, so every later number is relative to a
-  real starting point — the §12 "future model comparison" foundation. (MultiTalk
-  is deferred — ADR-0004 — so initial comparisons are SkyReels setting-vs-setting.)
+- Establish the **first benchmark baseline** (OmniAvatar 1.3B on the 4090,
+  default settings) before any optimization, so every later number is relative
+  to a real starting point — the §12 "future model comparison" foundation.
+  (Only OmniAvatar is active — ADR-0004 — so initial comparisons are
+  OmniAvatar setting-vs-setting.)
 - Pin FlashAttention/SageAttention builds to the CUDA/torch versions chosen in
   the Docker review.
 - Record an `attention`/`dtype`/`cpu_offload` option per provider in

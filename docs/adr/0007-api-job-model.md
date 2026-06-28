@@ -6,8 +6,9 @@
 
 ## Context
 
-Video generation takes minutes per clip (SkyReels V3 target single-digit
-minutes; the prior MultiTalk/L4 baseline was ~40 min — §2). A single GPU
+Video generation takes minutes per clip (the prior MultiTalk/L4 baseline was
+~40 min — §2; OmniAvatar 1.3B time on the RTX 4090 is measured in Phase 1). A
+single GPU
 (RTX 4090 dev / L40S prod) is saturated by one generation at a time. The REST
 API (§10) must decide how a caller waits for a multi-minute result:
 
@@ -23,8 +24,8 @@ contract, and the CLI are unaffected by it.
 ## Decision
 
 **Phase 1 uses the synchronous `POST /generate`** (option A), as already
-implemented in the scaffold. The goal of Phase 1 is to validate the SkyReels
-V3 integration end-to-end internally, and the synchronous path is the simplest
+implemented in the scaffold. The goal of Phase 1 is to validate the OmniAvatar
+1.3B integration end-to-end internally, and the synchronous path is the simplest
 thing that proves the request → Pipeline → Provider flow.
 
 **The async queue (option B) is deferred to Phase 3** (commercial hardening),
@@ -42,7 +43,7 @@ Phase 1 constraints to stay within the synchronous model:
 
 ### Positive
 - Zero extra infrastructure (no queue, worker, or job store) in Phase 1 →
-  fastest path to a validated SkyReels pipeline.
+  fastest path to a validated OmniAvatar pipeline.
 - The scaffold already implements it; no API rework to start Phase 1.
 - The Provider/Pipeline boundary is untouched, so the later move to B does not
   ripple into model code.

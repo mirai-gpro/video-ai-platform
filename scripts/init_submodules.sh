@@ -7,20 +7,20 @@
 # upstream commit so we can follow official updates deliberately. No upstream
 # source is modified in place — all of our code lives under providers/.
 #
-# Active scope this phase: SkyReels V3 only (ADR-0004). MultiTalk is deferred
-# and added under the same policy when reintroduced.
+# Active scope this phase: OmniAvatar 1.3B only (ADR-0004). Other models
+# (e.g. MultiTalk for multi-person dialogue) are deferred and added under the
+# same policy when reintroduced.
 #
-# The submodule URLs/commits below are wired during Phase 1 (after design
-# approval). Until then this script is the single source of truth for the
-# intended layout. Replace the placeholder URL with the official upstream
-# remote and uncomment the `git submodule add` call to pin it.
+# Run this in a GitHub-reachable environment (RunPod / local dev); the Claude
+# Code session's git is routed to a repo-scoped proxy. After adding, pin to the
+# reviewed commit and record it in docs/adr/0002-third-party-submodules.md.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
-# --- Upstream sources (confirm exact official URLs at Phase 1) --------------
-SKYREELS_URL="${SKYREELS_URL:-https://github.com/SkyworkAI/SkyReels-V3.git}"
+# --- Upstream sources -------------------------------------------------------
+OMNIAVATAR_URL="${OMNIAVATAR_URL:-https://github.com/Omni-Avatar/OmniAvatar.git}"
 # MultiTalk deferred (ADR-0004); restore when reintroduced:
 # MULTITALK_URL="${MULTITALK_URL:-https://github.com/MeiGen-AI/MultiTalk.git}"
 
@@ -35,10 +35,10 @@ add_submodule() {
 }
 
 echo "Repo: $REPO_ROOT"
-echo "Adding/updating the SkyReels V3 submodule (requires network access to github.com)."
+echo "Adding/updating the OmniAvatar submodule (requires network access to github.com)."
 
-# SkyReels V3 — confirmed upstream (ADR-0002).
-add_submodule "$SKYREELS_URL" third_party/SkyReels-V3
+# OmniAvatar 1.3B — upstream github.com/Omni-Avatar/OmniAvatar (ADR-0002).
+add_submodule "$OMNIAVATAR_URL" third_party/OmniAvatar
 
 # MultiTalk deferred (ADR-0004); restore when reintroduced:
 # add_submodule "$MULTITALK_URL" third_party/MultiTalk

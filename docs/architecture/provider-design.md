@@ -40,19 +40,22 @@ added.
 
 ## Capability matrix
 
-| Mode            | SkyReels V3 (active) | MultiTalk (deferred) |
-|-----------------|:--------------------:|:--------------------:|
-| text_to_video   | ✓                    |                      |
-| talking_avatar  | ✓                    | ✓                    |
-| dialogue        |                      | ✓                    |
-| singing         |                      | ✓                    |
-| extend_video    | ✓                    |                      |
+| Mode            | OmniAvatar 1.3B (active) | future providers |
+|-----------------|:------------------------:|:----------------:|
+| talking_avatar  | ✓                        | —                |
+| singing         | ✓                        | —                |
+| dialogue        |                          | MultiTalk (multi-person) |
+| text_to_video   |                          | Wan, etc.        |
+| extend_video    |                          | (model-dependent) |
 
-SkyReels V3 is the only Provider integrated this phase. MultiTalk is deferred
-(ADR-0004); its column shows the capabilities it will restore when
-reintroduced. `dialogue` and `singing` modes exist in the contract now but are
-unserved until MultiTalk returns. (Declared in each Provider's `info`; exact
-coverage confirmed at Phase 1.)
+OmniAvatar 1.3B is the only Provider integrated this phase — it is audio-driven
+(reference image + audio + prompt), single-person. `dialogue` (multi-person)
+and `text_to_video` exist in the contract but are **unserved** until a provider
+that supports them is added (e.g. MultiTalk for dialogue, Wan for T2V). This is
+exactly the swap-without-rewrite property the architecture is designed for —
+the first model already changed from SkyReels V3 to OmniAvatar without touching
+the Pipeline/API/CLI. (Declared in each Provider's `info`; exact coverage
+confirmed at Phase 1.)
 
 ## Adding a new model (the whole job)
 

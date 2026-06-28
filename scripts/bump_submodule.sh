@@ -12,9 +12,9 @@
 # Claude session's git is routed to a repo-scoped proxy.
 #
 # Usage:
-#   scripts/bump_submodule.sh third_party/SkyReels-V3 <git-ref>
-#   scripts/bump_submodule.sh third_party/SkyReels-V3 v1.2.0
-#   scripts/bump_submodule.sh third_party/SkyReels-V3 origin/main   # tip of main
+#   scripts/bump_submodule.sh third_party/OmniAvatar <git-ref>
+#   scripts/bump_submodule.sh third_party/OmniAvatar v1.2.0
+#   scripts/bump_submodule.sh third_party/OmniAvatar origin/main   # tip of main
 set -euo pipefail
 
 if [ "$#" -ne 2 ]; then

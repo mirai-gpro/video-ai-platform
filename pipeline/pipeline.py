@@ -2,11 +2,11 @@
 
 Flow (proposal §9):
 
-    PipelineRequest -> Pipeline -> Provider -> (SkyReels | future models | …)
+    PipelineRequest -> Pipeline -> Provider -> (OmniAvatar | future models | …)
 
 The Pipeline knows about modes and Providers in the abstract only. It does not
-know that SkyReels uses diffusion or that an audio-driven model consumes audio
-tracks — that knowledge lives entirely behind the Provider boundary.
+know that OmniAvatar is audio-driven or that another model uses pure diffusion
+— that knowledge lives entirely behind the Provider boundary.
 """
 
 from __future__ import annotations

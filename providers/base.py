@@ -2,7 +2,7 @@
 
 This module is the architectural keystone of the platform. The Pipeline, REST
 API, and CLI depend ONLY on the types defined here; they never import a
-model-specific package. Adding a new model (SkyReels V4, Wan, Hallo2,
+model-specific package. Adding a new model (Wan, Hallo2,
 FaceFusion, …) means writing a new ``VideoProvider`` subclass under
 ``providers/<name>/`` and registering it — nothing upstream of the Provider
 boundary changes.

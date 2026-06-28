@@ -28,7 +28,7 @@ class ProviderSettings(BaseModel):
 
 
 class Settings(BaseModel):
-    default_provider: str = "skyreels"
+    default_provider: str = "omniavatar"
     output_dir: Path = Path("outputs")
     server: ServerSettings = Field(default_factory=ServerSettings)
     benchmark: BenchmarkSettings = Field(default_factory=BenchmarkSettings)

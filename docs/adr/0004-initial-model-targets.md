@@ -1,63 +1,70 @@
-# ADR-0004: Initial model target — SkyReels V3 (MultiTalk deferred)
+# ADR-0004: Initial model target — OmniAvatar 1.3B (SkyReels V3 cancelled)
 
 - **Status:** Proposed
-- **Date:** 2026-06-27 (updated 2026-06-28: MultiTalk deferred)
+- **Date:** 2026-06-27 (updated 2026-06-28: SkyReels V3 cancelled → OmniAvatar 1.3B)
 - **Deciders:** Platform team
 
 ## Context
 
-§3 originally named SkyReels V3 **and** MultiTalk as the initial integration
-targets, with Hallo2, Wan, and FaceFusion to follow (Phases 4-6). SkyReels
-V3's 2026 release is the trigger to redesign the generation base (§2).
+The initial integration target has changed during the design phase:
 
-Updated decision (2026-06-28): MultiTalk will **not** be tested or used in the
-current phase. The team wants to focus the first integration on SkyReels V3
-and validate the platform end-to-end on one model before taking on a second
-runtime.
+- §3 originally named SkyReels V3 (and MultiTalk) as the first targets.
+- 2026-06-28: **SkyReels V3 is cancelled/abandoned.** The first model is now
+  **OmniAvatar 1.3B** (https://omni-avatar.github.io/,
+  github.com/Omni-Avatar/OmniAvatar, Apache-2.0).
+
+OmniAvatar is an **audio-driven avatar video** model: from a reference image +
+an audio track + a text prompt it produces a single-person avatar video with
+lip-sync and adaptive body animation (singing supported). It builds on
+Wan2.1-T2V-1.3B. The **1.3B** variant is chosen over the 14B variant because it
+fits the 24 GB RTX 4090 development GPU (§4); 14B is far heavier (36 GB
+unoptimized on A800-class hardware).
+
+This fit the project's core content targets directly — idol singing MV, AI
+interview, talking/dialogue, SNS shorts (§1) — which are audio-driven avatar
+use cases, more so than a generic text-to-video foundation model.
 
 ## Decision
 
-Phase 1 integrates **exactly one Provider: `skyreels`** (SkyReels V3) —
-text-to-video, talking avatar, and video extension.
+Phase 1 integrates **exactly one Provider: `omniavatar`** (OmniAvatar 1.3B),
+serving the audio-driven modes:
 
-**MultiTalk is deferred** to a later phase. It remains a first-class part of
-the long-term vision (audio-driven talking avatar, multi-person dialogue, and
-singing lip-sync, already validated on GCP L4 — §2). Because of the
-model-agnostic architecture (ADR-0001), re-introducing it is purely additive:
-add the submodule, add `providers/multitalk/`, register it. Nothing upstream
-of the Provider boundary changes.
+- `talking_avatar` — reference image + audio (+ prompt) → talking-head/body video.
+- `singing` — reference image + vocal track (+ prompt) → singing performance.
 
-Consequences for product modes:
+OmniAvatar is single-person, so **`dialogue` (multi-person) remains unserved**
+and deferred (it was MultiTalk's domain). `text_to_video` is not an OmniAvatar
+mode; it stays in the contract for a future T2V provider (e.g. Wan).
 
-- `dialogue` and `singing` are audio-driven capabilities that MultiTalk
-  serves; they move to the "later" phase **with MultiTalk**. Their request
-  contracts (`DialogueRequest`, `SingingRequest`) and `GenerationMode` entries
-  already exist, so no contract change is needed when MultiTalk returns.
+Other models (MultiTalk, Hallo2, Wan, FaceFusion) are added later purely as new
+Providers (ADR-0001), no architectural change.
 
 ## Consequences
 
 ### Positive
-- A single runtime to stand up in Phase 1 → faster path to a validated,
-  benchmarked SkyReels pipeline on RunPod.
-- Less surface area to debug; the L4-validated MultiTalk setup is not blocked
-  on, and is re-added cleanly when prioritized.
-- The architecture is still proven model-agnostic by tests (a `FakeProvider`
-  exercises the boundary) and by the contract that future Providers slot into.
+- Directly matches the §1 content targets (singing MV, interview, talking).
+- 1.3B fits the 24 GB RTX 4090 dev card; lower VRAM/cost than 14B (§4, §16).
+- Apache-2.0 license is permissive for commercial use (§18).
+- One runtime to stand up in Phase 1 → fast path to a validated, benchmarked
+  pipeline on RunPod.
 
 ### Negative / costs
-- Only one real Provider is live this phase, so cross-model benchmark
-  comparison (§12) starts as **setting-vs-setting** on SkyReels (e.g. baseline
-  vs FlashAttention/FP8) rather than model-vs-model until MultiTalk returns.
-- Dialogue/singing product capabilities are not available until MultiTalk is
-  reintroduced.
+- No text-to-video capability this phase (OmniAvatar is audio-driven only);
+  generic T2V awaits a future provider.
+- `dialogue` (multi-person) is unavailable until a multi-person model (e.g.
+  MultiTalk) is added.
+- Quality of 1.3B vs 14B should be evaluated; if 1.3B is insufficient for
+  commercial quality, the 14B variant is added as `omniavatar-14b` (a config /
+  weights change, possibly with CPU offload), measured via the benchmark
+  system.
 
 ## Alternatives considered
 
-- **Integrate both now (the original §3 plan)** — broader capability sooner,
-  but two runtimes to stabilize at once and MultiTalk is not currently a
-  testing priority. Rejected for this phase.
-- **Drop MultiTalk permanently** — loses the validated dialogue/singing
-  capability central to the §1 content targets. Rejected; deferred, not
-  dropped.
-- **Wait for SkyReels V4** — speculative timing; V3 is available now and a V4
-  swap is cheap later. Rejected.
+- **SkyReels V3 (previous plan)** — cancelled by the team; superseded by
+  OmniAvatar 1.3B. Rejected.
+- **OmniAvatar 14B** — higher quality ceiling but 36 GB-class VRAM, a poor fit
+  for the 24 GB RTX 4090 dev card; revisit on L40S (48 GB) prod if 1.3B quality
+  is insufficient. Deferred.
+- **Keep both an avatar model and a T2V model from day one** — broader
+  capability, but two runtimes to stabilize at once. Rejected for Phase 1;
+  T2V/dialogue providers are additive later.
