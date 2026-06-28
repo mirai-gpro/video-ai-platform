@@ -16,3 +16,22 @@ upstream URLs and pinned commits are recorded in
 **Rule:** all of our own code lives under `providers/`. Nothing in this
 directory is edited; we adapt to upstream, not the reverse. This keeps us able
 to follow official updates by bumping the submodule pin.
+
+## Updating (bumping the pin)
+
+Submodules are **pinned to a reviewed commit** and **never auto-updated**
+(ADR-0002, policy A). To follow an official update deliberately:
+
+```bash
+# 1. Move the pin to a chosen commit/tag and print the upstream diff
+scripts/bump_submodule.sh third_party/SkyReels-V3 <git-ref>
+
+# 2. Review the diff, update providers/skyreels if the API changed,
+#    re-benchmark vs the previous pin, then record + commit:
+git add third_party/SkyReels-V3 docs/adr/0002-third-party-submodules.md
+git commit -m "Bump SkyReels-V3 to <ref>"
+```
+
+Run this in a GitHub-reachable environment (RunPod / local dev); the Claude
+Code session's git is routed to a repo-scoped proxy. A given build always uses
+the exact pinned commit — runtime never fetches "latest".

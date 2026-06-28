@@ -28,12 +28,31 @@ reintroduced.
 | SkyReels-V3 | active (Phase 1) | `https://github.com/SkyworkAI/SkyReels-V3` | _set on first add_ |
 | MultiTalk   | deferred (later) | _TBD when reintroduced_ | _TBD_ |
 
-> **Where the submodule is added.** The Claude Code session's git egress is
-> scoped to the platform repository only, so external hosts (github.com) are
-> denied by egress policy there. The submodule is therefore added in a
-> GitHub-reachable environment (the RunPod / local dev box) by running
-> `scripts/init_submodules.sh`; commit the resulting `.gitmodules` +
-> gitlink and record the pinned commit in the table above.
+### Update policy — pinned + manual bump (decided)
+
+The pin is **never auto-updated** and the submodule is **never tracked to a
+branch tip at runtime**. Following official updates is a deliberate, reviewed
+action ("bump the pin"), which preserves reproducibility, stable benchmarks
+(§12), and quality control (§18):
+
+1. Move the pin to a chosen upstream commit/tag with
+   `scripts/bump_submodule.sh <path> <ref>`.
+2. Review the printed upstream diff for breaking changes / new requirements.
+3. Update the `providers/<model>/` adapter if the upstream API changed.
+4. Re-benchmark and compare against the previous pin (quality first).
+5. Record the new pinned commit in the table above and commit the gitlink.
+
+A given build always uses the exact pinned commit — runtime never fetches
+"latest".
+
+> **Where submodule git operations run.** A raw HTTPS fetch of github.com
+> succeeds from the Claude Code session, but this session's **git** is routed
+> by an `insteadOf` rewrite to a proxy scoped to the platform repository, so
+> `git submodule add` / `clone` of an external repo is refused there. The
+> submodule is therefore added and bumped in a GitHub-reachable environment
+> (RunPod / local dev) with `scripts/init_submodules.sh` and
+> `scripts/bump_submodule.sh`; commit the resulting `.gitmodules` + gitlink and
+> record the pinned commit above.
 
 ## Consequences
 
@@ -57,3 +76,7 @@ reintroduced.
 - **`pip install` upstream as a package** — only viable if upstream publishes
   a suitable package + matching versioning; reconsider per-model at Phase 1 if
   it is cleaner than a submodule for that model.
+- **Branch-tracking / auto-update to latest at runtime** — would drop
+  reproducibility, make benchmarks non-comparable across runs, and let an
+  upstream breaking or quality-regressing change reach production unreviewed.
+  Rejected in favor of pinned + manual bump.
