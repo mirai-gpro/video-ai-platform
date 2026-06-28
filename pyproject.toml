@@ -1,7 +1,7 @@
 [project]
 name = "video-ai-platform"
 version = "0.1.0"
-description = "Model-agnostic, modular video generation platform (SkyReels V3, MultiTalk, and beyond)"
+description = "Model-agnostic, modular video generation platform (SkyReels V3 and beyond)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "Proprietary" }
@@ -22,8 +22,8 @@ dependencies = [
 
 [project.optional-dependencies]
 # Installed in the GPU containers (RunPod RTX 4090 / L40S). Pinned for real
-# during Phase 1 once the SkyReels V3 / MultiTalk runtime requirements are
-# locked against the submodule commits.
+# during Phase 1 once the SkyReels V3 runtime requirements are locked against
+# the submodule commit.
 gpu = [
     # "torch",            # CUDA 12.x build, pinned in docker/ at Phase 1
     # "accelerate",

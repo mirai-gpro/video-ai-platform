@@ -7,8 +7,11 @@
 ## Context
 
 §12-13 require a benchmark system in the initial implementation to compare
-SkyReels V3 and MultiTalk objectively and to form the baseline data for future
-model comparisons. The original system's core problem was speed/cost (§2), so
+generation models and settings objectively and to form the baseline data for
+future model comparisons. (MultiTalk is deferred this phase — ADR-0004 — so
+the first comparisons are SkyReels setting-vs-setting; the schema is identical
+for model-vs-model when MultiTalk and other Providers arrive.) The original
+system's core problem was speed/cost (§2), so
 measuring inference time, VRAM, and output characteristics is central — not an
 afterthought. §18 makes quality the top priority, which means quality-affecting
 optimizations must be decided on measured evidence.

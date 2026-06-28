@@ -34,14 +34,14 @@ Every decision below follows from that pressure.
                        ▼
               ┌────────────────┐
               │  VideoProvider │   common interface (§8)
-              └───┬────────┬───┘
-                  ▼        ▼
-          ┌──────────┐ ┌──────────┐   the ONLY model-specific code (providers/)
-          │ skyreels │ │ multitalk│
-          └────┬─────┘ └────┬─────┘
-               ▼            ▼
-        third_party/   third_party/      upstream repos as submodules (§7)
-        SkyReels-V3    MultiTalk         never forked, never edited
+              └───┬────────────┘
+                  ▼        ┌············┐   the ONLY model-specific code (providers/)
+          ┌──────────┐    : multitalk  :   (deferred — added later, ADR-0004)
+          │ skyreels │    : wan/hallo2 :
+          └────┬─────┘    └············┘
+               ▼
+        third_party/                       upstream repos as submodules (§7)
+        SkyReels-V3                         never forked, never edited
 ```
 
 **The Provider boundary is the architecture.** Everything above it is written
@@ -98,16 +98,15 @@ tests) while honoring "review before implementation."
 | Provider design review     | [`provider-design.md`](provider-design.md) |
 | Docker design review       | [`docker-design.md`](docker-design.md) |
 | RunPod optimization review | [`runpod-optimization.md`](runpod-optimization.md) |
+| RunPod RTX 4090 setup      | [`runpod-setup.md`](runpod-setup.md) |
 
 ## 7. Open questions for sign-off
 
-1. **Upstream pins** — confirm the official SkyReels V3 and MultiTalk
-   repo URLs and the exact commits to pin (ADR-0002).
-2. **MultiTalk reuse** — reuse the validated GCP-L4 MultiTalk setup as-is on
-   RunPod, or re-validate against the RTX 4090 / L40S target first?
-3. **Output storage** — local `outputs/` only for now, or object storage
+1. **Upstream pin** — confirm the official SkyReels V3 repo URL and the exact
+   commit to pin (ADR-0002). (MultiTalk is deferred — ADR-0004.)
+2. **Output storage** — local `outputs/` only for now, or object storage
    (S3/GCS) from the start for the commercial service?
-4. **API auth & job model** — is `POST /generate` synchronous for Phase 1,
+3. **API auth & job model** — is `POST /generate` synchronous for Phase 1,
    with async jobs/queue deferred, acceptable given multi-minute generations?
 
 These do not block the architecture; they shape Phase 1 scope.

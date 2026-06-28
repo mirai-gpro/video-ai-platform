@@ -3,10 +3,10 @@
 Upstream model repositories live here as **git submodules** and are **never
 forked or modified** (proposal §7).
 
-| Path                     | Upstream            | Purpose                                  |
-|--------------------------|---------------------|------------------------------------------|
-| `third_party/SkyReels-V3`| SkyReels V3 (TBD)   | Text-to-video foundation model           |
-| `third_party/MultiTalk`  | MultiTalk (TBD)     | Audio-driven dialogue & singing lip-sync |
+| Path                     | Status            | Purpose                                  |
+|--------------------------|-------------------|------------------------------------------|
+| `third_party/SkyReels-V3`| active (Phase 1)  | Text-to-video foundation model           |
+| `third_party/MultiTalk`  | deferred (later)  | Audio-driven dialogue & singing lip-sync (ADR-0004) |
 
 Submodules are added and pinned during **Phase 1** via
 [`scripts/init_submodules.sh`](../scripts/init_submodules.sh). The exact

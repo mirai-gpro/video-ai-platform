@@ -57,9 +57,10 @@ A/B comparison.
 
 ## Phase-1 follow-ups
 
-- Establish the **first benchmark baseline** (SkyReels V3 and MultiTalk on the
-  4090) before any optimization, so every later number is relative to a real
-  starting point — this is the §12 "future model comparison" foundation.
+- Establish the **first benchmark baseline** (SkyReels V3 on the 4090, default
+  settings) before any optimization, so every later number is relative to a
+  real starting point — the §12 "future model comparison" foundation. (MultiTalk
+  is deferred — ADR-0004 — so initial comparisons are SkyReels setting-vs-setting.)
 - Pin FlashAttention/SageAttention builds to the CUDA/torch versions chosen in
   the Docker review.
 - Record an `attention`/`dtype`/`cpu_offload` option per provider in

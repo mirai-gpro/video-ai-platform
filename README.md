@@ -6,9 +6,13 @@ SNS-oriented short-form video.
 
 The platform is intentionally **not** a SkyReels-only system. Video
 generation models are integrated behind a common **Provider** interface so
-that today's models (SkyReels V3, MultiTalk) and tomorrow's (SkyReels V4,
+that today's model (SkyReels V3) and tomorrow's (MultiTalk, SkyReels V4,
 Wan, Hallo2, FaceFusion, …) can be swapped in by adding a Provider — without
 touching the Pipeline, REST API, CLI, or future Web UI.
+
+> **Scope note.** The current phase integrates **SkyReels V3 only**.
+> MultiTalk is **deferred** (not tested/used for now) and will be added later
+> as one more Provider — see [ADR-0004](docs/adr/0004-initial-model-targets.md).
 
 > **Status: Design / Review phase.**
 > Per the project policy (proposal §15), the architecture, ADRs, directory
@@ -43,13 +47,11 @@ Records.
 ```
 video-ai-platform/
 ├── third_party/         # upstream model repos as git submodules (never forked)
-│   ├── SkyReels-V3/
-│   └── MultiTalk/
+│   └── SkyReels-V3/      #   (MultiTalk deferred — added in a later phase)
 ├── providers/           # the ONLY place model-specific code is allowed
 │   ├── base.py          # VideoProvider abstract interface + data contracts
 │   ├── registry.py      # name -> provider resolution
-│   ├── skyreels/
-│   └── multitalk/
+│   └── skyreels/        #   (MultiTalk provider deferred — ADR-0004)
 ├── pipeline/            # model-agnostic orchestration
 ├── api/                 # REST API (FastAPI) — common interface
 ├── cli/                 # command-line entrypoint
@@ -82,10 +84,13 @@ The REST API is uniform across models:
 
 ```http
 POST /generate
-{ "provider": "skyreels",  "mode": "talking_avatar" }
+{ "provider": "skyreels", "mode": "text_to_video" }
 POST /generate
-{ "provider": "multitalk", "mode": "dialogue" }
+{ "provider": "skyreels", "mode": "talking_avatar" }
 ```
+
+The envelope is identical for every future model — selecting MultiTalk, Wan,
+etc. later is just a different `"provider"` value, no API change.
 
 ---
 
@@ -99,6 +104,8 @@ POST /generate
 GCP L4 is **not** used (insufficient VRAM, insufficient inference speed, poor
 cost efficiency). See
 [`docs/adr/0003-gpu-environment-runpod.md`](docs/adr/0003-gpu-environment-runpod.md).
+The step-by-step pod preparation guide is
+[`docs/architecture/runpod-setup.md`](docs/architecture/runpod-setup.md).
 
 Recommended stack: Python 3.12 · CUDA 12.x · latest PyTorch · `uv` · YAML
 config · JSON logs · REST API + CLI.
@@ -126,12 +133,14 @@ Until model integration lands, the Providers are registered but raise a clear
 
 | Phase | Scope |
 |-------|-------|
-| 1 | SkyReels V3 + MultiTalk integration · Provider impl · Docker · RunPod |
-| 2 | Talking Avatar · Dialogue · Singing modes |
+| 1 | **SkyReels V3** integration · Provider impl · Docker · RunPod |
+| 2 | SkyReels modes: Text-to-Video · Talking Avatar · Video Extend |
 | 3 | Benchmark automation · REST API · CLI |
-| 4 | Hallo2 |
-| 5 | Wan |
-| 6 | FaceFusion |
+| later | **MultiTalk** (Dialogue · Singing) · Hallo2 · Wan · FaceFusion |
+
+> MultiTalk is deferred (ADR-0004). Audio-driven Dialogue/Singing modes are
+> provided by MultiTalk and therefore move to the "later" phase with it; the
+> mode contracts already exist so re-introduction is additive.
 
 Full phase breakdown and the performance-optimization backlog
 (FlashAttention, SageAttention, torch.compile, FP8, CPU offload, xDiT, …) are

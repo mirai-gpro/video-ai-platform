@@ -28,8 +28,8 @@ class GenerateRequestModel(BaseModel):
     ``extra`` and are passed through untouched.
     """
 
-    provider: str = Field(..., examples=["skyreels", "multitalk"])
-    mode: GenerationMode = Field(..., examples=["talking_avatar", "dialogue"])
+    provider: str = Field(..., examples=["skyreels"])
+    mode: GenerationMode = Field(..., examples=["text_to_video", "talking_avatar"])
     prompt: str = ""
     negative_prompt: str = ""
     reference_image: str | None = None

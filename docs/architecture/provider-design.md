@@ -38,17 +38,21 @@ added.
   singing?" into data the API can answer (`/providers`) and the Pipeline can
   enforce, instead of a try/except around a model call.
 
-## Capability matrix (launch targets)
+## Capability matrix
 
-| Mode            | SkyReels V3 | MultiTalk |
-|-----------------|:-----------:|:---------:|
-| text_to_video   | ✓           |           |
-| talking_avatar  | ✓           | ✓         |
-| dialogue        |             | ✓         |
-| singing         |             | ✓         |
-| extend_video    | ✓           |           |
+| Mode            | SkyReels V3 (active) | MultiTalk (deferred) |
+|-----------------|:--------------------:|:--------------------:|
+| text_to_video   | ✓                    |                      |
+| talking_avatar  | ✓                    | ✓                    |
+| dialogue        |                      | ✓                    |
+| singing         |                      | ✓                    |
+| extend_video    | ✓                    |                      |
 
-(Declared in each Provider's `info`; exact coverage confirmed at Phase 1.)
+SkyReels V3 is the only Provider integrated this phase. MultiTalk is deferred
+(ADR-0004); its column shows the capabilities it will restore when
+reintroduced. `dialogue` and `singing` modes exist in the contract now but are
+unserved until MultiTalk returns. (Declared in each Provider's `info`; exact
+coverage confirmed at Phase 1.)
 
 ## Adding a new model (the whole job)
 

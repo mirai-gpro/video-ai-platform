@@ -39,15 +39,16 @@ def test_json_write(tmp_path):
 
 
 def test_report_with_comparison():
-    sky = _record(inference_seconds=492.0, peak_vram_gb=21.4, output_file_size_mb=118.0)
-    multitalk = _record(
-        provider="multitalk",
-        model_version="baseline",
+    # Realistic use this phase: compare two SkyReels settings (optimized vs
+    # baseline) so optimization decisions are evidence-based (ADR-0005).
+    optimized = _record(inference_seconds=492.0, peak_vram_gb=21.4, output_file_size_mb=118.0)
+    baseline = _record(
+        model_version="V3-baseline",
         inference_seconds=712.0,
         peak_vram_gb=18.6,
         output_file_size_mb=100.0,
     )
-    report = render_report(sky, baseline=multitalk)
+    report = render_report(optimized, baseline=baseline)
     assert "Benchmark Report" in report
     assert "Faster" in report
     assert "VRAM" in report

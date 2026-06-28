@@ -55,18 +55,16 @@ def _bootstrap() -> None:
 
     Imports are local so a failure to import one Provider's (GPU) dependencies
     does not prevent the others from registering.
+
+    Active scope: SkyReels V3 only. MultiTalk is deferred to a future phase
+    (ADR-0004); when it returns it is added here as one more registration —
+    nothing upstream of the Provider boundary changes.
     """
     try:
         from providers.skyreels import register_provider as _skyreels
 
         _skyreels()
     except Exception:  # noqa: BLE001 - design-phase tolerance; logged in Phase 1
-        pass
-    try:
-        from providers.multitalk import register_provider as _multitalk
-
-        _multitalk()
-    except Exception:  # noqa: BLE001
         pass
 
 

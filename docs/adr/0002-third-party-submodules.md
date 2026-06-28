@@ -14,20 +14,19 @@ only under `providers/`.
 ## Decision
 
 Vendor each upstream model repo as a **git submodule** under `third_party/`,
-pinned to a specific reviewed commit:
+pinned to a specific reviewed commit. We never edit upstream in place;
+adaptation happens entirely in the corresponding `providers/<model>/` package.
+Submodules are added/pinned via `scripts/init_submodules.sh`; this ADR records
+the chosen upstream URLs and commit pins once confirmed.
 
-- `third_party/SkyReels-V3`
-- `third_party/MultiTalk`
+Active scope this phase: **SkyReels V3 only** (ADR-0004). MultiTalk is
+deferred; its submodule is added under this same policy when it is
+reintroduced.
 
-We never edit upstream in place. Adaptation happens entirely in the
-corresponding `providers/<model>/` package. Submodules are added/pinned via
-`scripts/init_submodules.sh` during Phase 1; this ADR records the chosen
-upstream URLs and commit pins once confirmed.
-
-| Submodule | Upstream URL | Pinned commit |
-|-----------|--------------|---------------|
-| SkyReels-V3 | _TBD — confirm official repo at Phase 1_ | _TBD_ |
-| MultiTalk   | _TBD — confirm official repo at Phase 1_ | _TBD_ |
+| Submodule | Status | Upstream URL | Pinned commit |
+|-----------|--------|--------------|---------------|
+| SkyReels-V3 | active (Phase 1) | _TBD — confirm official repo_ | _TBD_ |
+| MultiTalk   | deferred (later) | _TBD when reintroduced_ | _TBD_ |
 
 ## Consequences
 

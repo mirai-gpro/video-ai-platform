@@ -15,7 +15,9 @@ def test_healthz():
 
 def test_providers_listed():
     names = {p["name"] for p in client.get("/providers").json()}
-    assert {"skyreels", "multitalk"} <= names
+    # Active scope this phase: SkyReels V3 only (MultiTalk deferred, ADR-0004).
+    assert "skyreels" in names
+    assert "multitalk" not in names
 
 
 def test_unknown_provider_404():

@@ -19,8 +19,9 @@ from providers.base import (
 
 def test_builtin_providers_registered():
     names = available()
+    # Active scope this phase: SkyReels V3 only (MultiTalk deferred, ADR-0004).
     assert "skyreels" in names
-    assert "multitalk" in names
+    assert "multitalk" not in names
 
 
 def test_provider_info_declares_modes():
@@ -44,8 +45,8 @@ def test_unsupported_mode_is_rejected_before_model_work():
 
 
 def test_supported_mode_reaches_not_yet_implemented():
-    # MultiTalk advertises DIALOGUE; in design phase it signals clearly.
-    mt = create("multitalk")
-    assert mt.supports(GenerationMode.DIALOGUE)
+    # SkyReels advertises TEXT_TO_VIDEO; in design phase it signals clearly.
+    sky = create("skyreels")
+    assert sky.supports(GenerationMode.TEXT_TO_VIDEO)
     with pytest.raises(NotYetImplementedError):
-        mt.dialogue(None)  # type: ignore[arg-type]
+        sky.generate(None)  # type: ignore[arg-type]

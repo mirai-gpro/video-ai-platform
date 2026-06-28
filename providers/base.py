@@ -105,7 +105,7 @@ class SingingRequest(_BaseRequest):
 
 @dataclass
 class DialogueRequest(_BaseRequest):
-    """Multi-speaker conversation (e.g. MultiTalk two-person dialogue)."""
+    """Multi-speaker conversation (served by an audio-driven provider)."""
 
     # One entry per speaker; each pairs a reference image with that speaker's
     # audio track. Order defines speaker index.

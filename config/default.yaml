@@ -14,6 +14,9 @@ benchmark:
 
 # Per-provider options. These are passed into the Provider untouched; the
 # shared layers never interpret them. Real values are filled in at Phase 1.
+#
+# Active scope: SkyReels V3 only. MultiTalk is deferred to a future phase
+# (ADR-0004); add its options block here when it is reintroduced.
 providers:
   options:
     skyreels:
@@ -21,8 +24,4 @@ providers:
       # dtype: bfloat16
       # attention: flash      # flash | sage | sdpa
       # cpu_offload: false
-      {}
-    multitalk:
-      # weights_path: /workspace/weights/MultiTalk
-      # dtype: bfloat16
       {}
